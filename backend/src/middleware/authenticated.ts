@@ -17,10 +17,7 @@ export function authenticated(req: Request, res: Response, next: NextFunction) {
       return res.status(401).json({ message: 'Unauthorized' })
     }
 
-    req = {
-      ...req,
-      user: payload as AuthUserRequest,
-    } as AuthenticatedRequest
+    ;(req as AuthenticatedRequest).user = payload as AuthUserRequest
 
     next()
   } catch (err) {

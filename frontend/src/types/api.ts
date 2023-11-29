@@ -40,3 +40,7 @@ export type CreateUserResponse = {
   message: string
   user: User
 }
+
+export type GetMeResponse = {
+  user: User
+}

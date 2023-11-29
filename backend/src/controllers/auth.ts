@@ -9,6 +9,8 @@ import { createUser, getUserByEmail } from '../services/user-service'
 
 import { validateFields } from '../utils/validators'
 import { handleError } from '../utils/error-handling'
+import { authenticated } from '../middleware/authenticated'
+import type { AuthenticatedRequest } from '../types/auth-user-request'
 
 const router = Router()
 
@@ -94,5 +96,28 @@ router.post(
     }
   },
 )
+
+router.get('/me', authenticated, async (req: Request, res: Response) => {
+  try {
+    const userEmail = (req as AuthenticatedRequest).user?.email
+    if (!userEmail) {
+      throw new Error('User not found')
+    }
+
+    const user = await getUserByEmail(userEmail)
+
+    if (!user) {
+      throw new Error('User not found')
+    }
+
+    res.json({
+      message: 'User found',
+      user,
+    })
+  } catch (error) {
+    const err = error as Error
+    handleError(err, req, res, () => {})
+  }
+})
 
 export const authController = router

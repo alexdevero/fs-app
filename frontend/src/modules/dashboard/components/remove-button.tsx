@@ -9,9 +9,10 @@ import revalidateUsers from '../actions/revalidate-users'
 type Props = {
   userId: string
   token?: string
+  disabled?: boolean
 }
 
-export const RemoveButton = ({ userId, token }: Props) => {
+export const RemoveButton = ({ disabled, userId, token }: Props) => {
   const handleClick = async () => {
     if (!token) return
 
@@ -33,8 +34,11 @@ export const RemoveButton = ({ userId, token }: Props) => {
 
   return (
     <button
-      className="bg-blue-500 h-7 text-white rounded-md px-3 text-xs"
+      className={`bg-blue-500 h-7 text-white rounded-md px-3 text-xs${
+        disabled ? ' bg-gray-400 opacity-50 cursor-not-allowed' : ''
+      }`}
       onClick={handleClick}
+      disabled={disabled}
     >
       Remove
     </button>

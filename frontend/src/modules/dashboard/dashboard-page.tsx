@@ -1,12 +1,12 @@
 import { cookies } from 'next/headers'
 
 import { API_URL } from '@/consts/env'
-import { GetUsersResponse } from '@/types/api'
+import type { GetMeResponse, GetUsersResponse } from '@/types/api'
 import { customFetch } from '@/utils/fetch'
 
 import { RemoveButton } from './components/remove-button'
 
-async function getData(token?: string) {
+async function getUsersData(token?: string) {
   if (!token) return
 
   try {
@@ -24,10 +24,29 @@ async function getData(token?: string) {
   }
 }
 
+async function getMeData(token?: string) {
+  if (!token) return
+
+  try {
+    const res = await customFetch({
+      url: `${API_URL}/me`,
+      headers: {
+        Cookie: `token=${token}`,
+      },
+    })
+    const data = (await res.json()) as GetMeResponse
+
+    return data.user
+  } catch (err) {
+    console.error(err)
+  }
+}
+
 export async function DashboardPage() {
   const cookieStore = cookies()
   const tokenCookie = cookieStore.get('token')?.value
-  const data = await getData(tokenCookie)
+  const data = await getUsersData(tokenCookie)
+  const me = await getMeData(tokenCookie)
 
   return (
     <div className="px-3">
@@ -45,7 +64,11 @@ export async function DashboardPage() {
               <td className="h-7">{user.name}</td>
               <td className="h-7">{user.email}</td>
               <td className="h-7 text-right">
-                <RemoveButton userId={user.id} token={tokenCookie} />
+                <RemoveButton
+                  userId={user.id}
+                  token={tokenCookie}
+                  disabled={user.email === me?.email}
+                />
               </td>
             </tr>
           ))}
