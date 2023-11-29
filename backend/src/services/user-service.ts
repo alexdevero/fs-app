@@ -11,7 +11,7 @@ export async function getUsers() {
 }
 
 export async function getUserByEmail(email: string) {
-  const user = await DI.em.findOneOrFail(User, { email })
+  const user = await DI.em.findOne(User, { email })
 
   return user
 }
