@@ -1,4 +1,4 @@
-import { User } from '@/types/api'
+import { GetUsersResponse, User } from '@/types/api'
 import { cookies } from 'next/headers'
 import { RemoveButton } from './components/remove-button'
 
@@ -16,9 +16,9 @@ async function getData(token?: string) {
         tags: ['users'],
       },
     })
-    const data = await res.json()
+    const data = (await res.json()) as GetUsersResponse
 
-    return data.users as User[]
+    return data.users
   } catch (err) {
     console.error(err)
   }

@@ -1,5 +1,6 @@
 'use client'
 
+import { CreateUserResponse } from '@/types/api'
 import { useRouter } from 'next/navigation'
 import { FormEvent } from 'react'
 
@@ -23,7 +24,7 @@ export async function SignUpPage() {
         credentials: 'include',
         body: JSON.stringify({ email, name, password }),
       })
-      const res = await response.json()
+      const res = (await response.json()) as CreateUserResponse
 
       if (res.user) {
         router.push('/dashboard')

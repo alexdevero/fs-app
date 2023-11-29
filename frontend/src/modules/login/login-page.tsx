@@ -2,6 +2,7 @@
 
 import { FormEvent } from 'react'
 import { useRouter } from 'next/navigation'
+import { LoginResponse } from '@/types/api'
 
 export async function LoginPage() {
   const router = useRouter()
@@ -22,7 +23,7 @@ export async function LoginPage() {
         credentials: 'include',
         body: JSON.stringify({ email, password }),
       })
-      const res = await response.json()
+      const res = (await response.json()) as LoginResponse
 
       if (res.token) {
         router.push('/dashboard')

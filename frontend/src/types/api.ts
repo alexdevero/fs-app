@@ -18,3 +18,25 @@ export type User = {
   createdAt: string
   updatedAt: string
 }
+
+export type DeleteUserResponse = {
+  message: string
+}
+
+export type UpdateUserResponse = {
+  message: string
+  user: User
+}
+
+export type GetUsersResponse = {
+  users: User[]
+}
+
+export type GetUserResponse = {
+  user: User
+}
+
+export type CreateUserResponse = {
+  message: string
+  user: User
+}

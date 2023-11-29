@@ -13,6 +13,7 @@ import {
   DialogClose,
   DialogTitle,
 } from '@/components/dialog'
+import { CreateUserResponse } from '@/types/api'
 
 export const AddUserButton = () => {
   const [isClient, setIsClient] = useState(false)
@@ -39,7 +40,7 @@ export const AddUserButton = () => {
         credentials: 'include',
         body: JSON.stringify({ email, name, password }),
       })
-      const res = await response.json()
+      const res = (await response.json()) as CreateUserResponse
 
       if (res.user) {
         revalidateUsers()

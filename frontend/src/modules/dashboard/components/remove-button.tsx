@@ -1,5 +1,7 @@
 'use client'
 
+import { DeleteUserResponse } from '@/types/api'
+
 import revalidateUsers from '../actions/revalidate-users'
 
 type Props = {
@@ -20,7 +22,7 @@ export const RemoveButton = ({ userId, token }: Props) => {
         },
         credentials: 'include',
       })
-      const data = await res.json()
+      const data = (await res.json()) as DeleteUserResponse
 
       revalidateUsers()
     } catch (err) {
