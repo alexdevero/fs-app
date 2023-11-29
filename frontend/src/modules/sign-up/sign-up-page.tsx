@@ -1,8 +1,11 @@
 'use client'
 
-import { CreateUserResponse } from '@/types/api'
 import { useRouter } from 'next/navigation'
 import { FormEvent } from 'react'
+
+import { API_URL } from '@/consts/env'
+import { CreateUserResponse } from '@/types/api'
+import { customFetch } from '@/utils/fetch'
 
 export async function SignUpPage() {
   const router = useRouter()
@@ -16,12 +19,9 @@ export async function SignUpPage() {
     const password = formData.get('password')
 
     try {
-      const response = await fetch('http://localhost:3000/api/register', {
+      const response = await customFetch({
+        url: `${API_URL}/register`,
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
         body: JSON.stringify({ email, name, password }),
       })
       const res = (await response.json()) as CreateUserResponse

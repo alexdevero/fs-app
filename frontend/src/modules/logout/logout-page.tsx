@@ -3,18 +3,18 @@
 import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
 
+import { API_URL } from '@/consts/env'
+import { customFetch } from '@/utils/fetch'
+
 export function LogoutPage() {
   const router = useRouter()
 
   useEffect(() => {
     const logout = async () => {
       try {
-        const response = await fetch('http://localhost:3000/api/logout', {
+        const response = await customFetch({
+          url: `${API_URL}/logout`,
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          credentials: 'include',
         })
 
         if (response.ok) {

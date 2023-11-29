@@ -27,5 +27,15 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
 
+  frontend:
+    image: node:21-alpine3.17
+    container_name: fs-app-frontend
+    working_dir: /usr/src/app
+    volumes:
+      - ./frontend:/usr/src/app
+    ports:
+      - '3001:3000'
+    command: sh -c "yarn && yarn dev"
+
 volumes:
   postgres_data:

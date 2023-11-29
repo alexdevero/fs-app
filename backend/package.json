@@ -1,7 +1,7 @@
 {
   "scripts": {
     "start": "ts-node dist/index.ts",
-    "dev": "nodemon src/index.ts",
+    "dev": "nodemon --exec ts-node -P tsconfig.json src/index.ts",
     "build": "tsc -p .",
     "test": "jest --watch",
     "migration:create": "npx mikro-orm migration:create",
@@ -47,5 +47,9 @@
     "configPaths": [
       "./src/mikro-orm.config.ts"
     ]
+  },
+  "nodemonConfig": {
+    "watch": ["src"],
+    "ext": "ts"
   }
 }

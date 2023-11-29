@@ -2,7 +2,10 @@
 
 import { FormEvent } from 'react'
 import { useRouter } from 'next/navigation'
+
+import { API_URL } from '@/consts/env'
 import { LoginResponse } from '@/types/api'
+import { customFetch } from '@/utils/fetch'
 
 export async function LoginPage() {
   const router = useRouter()
@@ -15,12 +18,9 @@ export async function LoginPage() {
     const password = formData.get('password')
 
     try {
-      const response = await fetch('http://localhost:3000/api/login', {
+      const response = await customFetch({
+        url: `${API_URL}/login`,
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
         body: JSON.stringify({ email, password }),
       })
       const res = (await response.json()) as LoginResponse

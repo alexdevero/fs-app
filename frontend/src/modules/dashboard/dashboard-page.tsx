@@ -1,19 +1,19 @@
-import { GetUsersResponse, User } from '@/types/api'
 import { cookies } from 'next/headers'
+
+import { API_URL } from '@/consts/env'
+import { GetUsersResponse } from '@/types/api'
+import { customFetch } from '@/utils/fetch'
+
 import { RemoveButton } from './components/remove-button'
 
 async function getData(token?: string) {
   if (!token) return
 
   try {
-    const res = await fetch('http://localhost:3000/api/users', {
-      method: 'GET',
+    const res = await customFetch({
+      url: `${API_URL}/users`,
       headers: {
-        'Content-Type': 'application/json',
         Cookie: `token=${token}`,
-      },
-      next: {
-        tags: ['users'],
       },
     })
     const data = (await res.json()) as GetUsersResponse

@@ -1,6 +1,8 @@
 'use client'
 
+import { API_URL } from '@/consts/env'
 import { DeleteUserResponse } from '@/types/api'
+import { customFetch } from '@/utils/fetch'
 
 import revalidateUsers from '../actions/revalidate-users'
 
@@ -14,13 +16,12 @@ export const RemoveButton = ({ userId, token }: Props) => {
     if (!token) return
 
     try {
-      const res = await fetch(`http://localhost:3000/api/users/${userId}`, {
+      const res = await customFetch({
+        url: `${API_URL}/users/${userId}`,
         method: 'DELETE',
         headers: {
-          'Content-Type': 'application/json',
           Cookie: `token=${token}`,
         },
-        credentials: 'include',
       })
       const data = (await res.json()) as DeleteUserResponse
 

@@ -2,8 +2,7 @@
 
 import { FormEvent, useEffect, useState } from 'react'
 
-import revalidateUsers from '../actions/revalidate-users'
-
+import { API_URL } from '@/consts/env'
 import {
   Dialog,
   DialogTrigger,
@@ -14,6 +13,9 @@ import {
   DialogTitle,
 } from '@/components/dialog'
 import { CreateUserResponse } from '@/types/api'
+import { customFetch } from '@/utils/fetch'
+
+import revalidateUsers from '../actions/revalidate-users'
 
 export const AddUserButton = () => {
   const [isClient, setIsClient] = useState(false)
@@ -32,12 +34,9 @@ export const AddUserButton = () => {
     const password = formData.get('password')
 
     try {
-      const response = await fetch('http://localhost:3000/api/register', {
+      const response = await customFetch({
+        url: `${API_URL}/register`,
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
         body: JSON.stringify({ email, name, password }),
       })
       const res = (await response.json()) as CreateUserResponse

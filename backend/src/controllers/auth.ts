@@ -1,12 +1,14 @@
-import { Request, Response, Router } from 'express'
+import { type Request, type Response, Router } from 'express'
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
-import { v4 as Uuid } from 'uuid'
-import { body, matchedData, validationResult } from 'express-validator'
+import { body } from 'express-validator'
 
-import { DI } from '..'
-import { AuthUserReq, UserReq } from '../types'
-import { User } from './../entities/user'
+import type { AuthUserReq, UserReq } from '../types'
+
+import { createUser, getUserByEmail } from '../services/user-service'
+
+import { validateFields } from '../utils/validators'
+import { handleError } from '../utils/error-handling'
 
 const router = Router()
 
@@ -15,30 +17,19 @@ router.post(
   body(['email', 'password']).notEmpty().escape(),
   async (req: Request, res: Response) => {
     try {
-      const result = validationResult(req)
+      const { email, password } = validateFields<UserReq>(req, ['email', 'password'])
 
-      if (!result.isEmpty()) {
-        return res.status(400).json({
-          message: 'Email and password are required',
-        })
-      }
-
-      const { email, password } = matchedData(req) as UserReq
-
-      const user = await DI.em.findOneOrFail(User, { email })
+      const user = await getUserByEmail(email)
 
       if (!user) {
-        return res.status(404).json({
-          message: 'User not found',
-        })
+        throw new Error('User not found')
       }
 
       const isValidPassword = await bcrypt.compare(password, user.password)
 
       if (!isValidPassword) {
-        return res.status(401).json({
-          message: 'Invalid password',
-        })
+        // Keep credentials err message vague to prevent brute force attacks
+        throw new Error('Invalid credentials')
       }
 
       const token = jwt.sign(
@@ -60,10 +51,7 @@ router.post(
         })
     } catch (error) {
       const err = error as Error
-      res.status(401).json({
-        message: 'Login not successful',
-        error: err.message,
-      })
+      handleError(err, req, res, () => {})
     }
   },
 )
@@ -73,10 +61,7 @@ router.post('/logout', async (req: Request, res: Response) => {
     res.clearCookie('token').sendStatus(200)
   } catch (error) {
     const err = error as Error
-    res.status(401).json({
-      message: 'Logout not successful',
-      error: err.message,
-    })
+    handleError(err, req, res, () => {})
   }
 })
 
@@ -85,36 +70,19 @@ router.post(
   body(['name', 'email', 'password']).notEmpty().escape(),
   async (req: Request, res: Response) => {
     try {
-      const result = validationResult(req)
+      const { name, email, password } = validateFields<UserReq>(req, [
+        'name',
+        'email',
+        'password',
+      ])
 
-      if (!result.isEmpty()) {
-        return res.status(400).json({
-          message: 'Name, email and password are required',
-        })
-      }
-
-      const { name, email, password } = matchedData(req) as UserReq
-
-      const existingUser = await DI.em.findOne(User, { email })
+      const existingUser = await getUserByEmail(email)
 
       if (existingUser) {
-        return res.status(400).json({
-          message: 'User already exists',
-        })
+        throw new Error('User already exists')
       }
 
-      const hashedPassword = await bcrypt.hash(password, 10)
-
-      const user = DI.em.create(User, {
-        id: Uuid(),
-        name,
-        email,
-        password: hashedPassword,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      })
-
-      await DI.em.persistAndFlush(user)
+      const user = await createUser(name, email, password)
 
       res.status(200).json({
         message: 'User successfully created',
@@ -122,10 +90,7 @@ router.post(
       })
     } catch (error) {
       const err = error as Error
-      res.status(401).json({
-        message: 'User not successfully created',
-        error: err.message,
-      })
+      handleError(err, req, res, () => {})
     }
   },
 )
