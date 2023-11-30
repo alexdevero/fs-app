@@ -35,9 +35,10 @@ export const RemoveButton = ({ disabled, userId, token }: Props) => {
   return (
     <button
       className={`bg-transparent text-gray-700 rounded-full flex items-center justify-center
-       w-8 h-8 text-xl ${disabled ? ' hidden' : ' hover:bg-gray-100 transition-all'}`}
-      onClick={handleClick}
+      w-8 h-8 text-xl ${disabled ? ' hidden' : ' hover:bg-gray-100 transition-all'}`}
       disabled={disabled}
+      data-testid="remove-button"
+      onClick={handleClick}
     >
       &times;
     </button>

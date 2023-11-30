@@ -37,13 +37,18 @@ export async function LoginPage() {
     <div>
       <h1 className="mb-8 text-2xl text-center">Welcome</h1>
 
-      <form onSubmit={handleSubmit} className="flex flex-col w-[320px] gap-4">
+      <form
+        onSubmit={handleSubmit}
+        className="flex flex-col w-[320px] gap-4"
+        data-testid="login-form"
+      >
         <input
           type="text"
           name="email"
           id="email"
           className="border border-slate-400 rounded-md h-9 px-2 text-sm"
           placeholder="Enter email..."
+          data-testid="login-email-input"
           required
         />
         <input
@@ -52,9 +57,14 @@ export async function LoginPage() {
           id="password"
           className="border border-slate-400 rounded-md h-9 px-2 text-sm"
           placeholder="Enter password..."
+          data-testid="login-password-input"
           required
         />
-        <button type="submit" className="bg-blue-500 h-9 text-white rounded-md">
+        <button
+          type="submit"
+          className="bg-blue-500 h-9 text-white rounded-md"
+          data-testid="login-submit-button"
+        >
           Login
         </button>
       </form>

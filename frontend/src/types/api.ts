@@ -29,7 +29,7 @@ export type UpdateUserResponse = {
 }
 
 export type GetUsersResponse = {
-  users: User[]
+  users: Omit<User, 'password'>[]
 }
 
 export type GetUserResponse = {

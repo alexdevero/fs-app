@@ -35,13 +35,18 @@ export async function SignUpPage() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col w-[320px] gap-4">
+    <form
+      onSubmit={handleSubmit}
+      className="flex flex-col w-[320px] gap-4"
+      data-testid="sign-up-form"
+    >
       <input
         type="text"
         name="name"
         id="name"
         className="border border-slate-400 rounded-md h-9 px-2 text-sm"
         placeholder="Enter name..."
+        data-testid="sign-up-name-input"
         required
       />
       <input
@@ -50,6 +55,7 @@ export async function SignUpPage() {
         id="email"
         className="border border-slate-400 rounded-md h-9 px-2 text-sm"
         placeholder="Enter email..."
+        data-testid="sign-up-email-input"
         required
       />
       <input
@@ -58,9 +64,14 @@ export async function SignUpPage() {
         id="password"
         className="border border-slate-400 rounded-md h-9 px-2 text-sm"
         placeholder="Enter password..."
+        data-testid="sign-up-password-input"
         required
       />
-      <button type="submit" className="bg-blue-500 h-9 text-white rounded-md">
+      <button
+        type="submit"
+        className="bg-blue-500 h-9 text-white rounded-md"
+        data-testid="sign-up-submit-button"
+      >
         Sign up
       </button>
     </form>

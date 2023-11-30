@@ -50,22 +50,23 @@ export async function DashboardPage() {
   const me = await getMeData(tokenCookie)
 
   return (
-    <div className="px-3">
-      <table className="w-full">
-        <thead className="bg-gray-800 text-white">
+    <div className="px-3" data-testid="dashboard-page">
+      <table className="w-full" data-testid="dashboard-table">
+        <thead className="bg-gray-800 text-white" data-testid="dashboard-table-header">
           <tr className="text-left font-bold text-sm">
             <th className="h-7 py-3 px-4 uppercase font-semibold text-sm">Name</th>
             <th className="h-7 py-3 px-4 uppercase font-semibold text-sm">Email</th>
             <th className="h-7 py-3 px-4 uppercase font-semibold text-sm" />
           </tr>
         </thead>
-        <tbody>
+        <tbody data-testid="dashboard-table-body">
           {data?.map((user, i) => (
             <tr
               key={user.id}
               className={`font-normal text-sm ${
                 i % 2 ? 'text-gray-700' : 'bg-gray-100'
               }`}
+              data-testid="dashboard-table-body-row"
             >
               <td className="h-7 text-left py-3 px-4">{user.name}</td>
               <td className="h-7 text-left py-3 px-4">{user.email}</td>
