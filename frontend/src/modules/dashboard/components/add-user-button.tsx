@@ -12,7 +12,7 @@ import {
   DialogClose,
   DialogTitle,
 } from '@/components/dialog'
-import { CreateUserResponse } from '@/types/api'
+import { CreateUserResponse, FieldError } from '@/types/api'
 import { customFetch } from '@/utils/fetch'
 
 import revalidateUsers from '../actions/revalidate-users'
@@ -20,6 +20,7 @@ import revalidateUsers from '../actions/revalidate-users'
 export const AddUserButton = () => {
   const [isClient, setIsClient] = useState(false)
   const [isOpen, setIsOpen] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     setIsClient(true)
@@ -47,6 +48,7 @@ export const AddUserButton = () => {
       }
     } catch (err) {
       console.error(err)
+      setError((err as Error | FieldError).message)
     }
   }
 
@@ -76,7 +78,9 @@ export const AddUserButton = () => {
                 name="name"
                 id="name"
                 data-testid="add-modal-name"
-                className="border border-slate-400 rounded-md h-9 px-2 text-sm"
+                className={`border border-slate-400 rounded-md h-9 px-2 text-sm${
+                  error ? ' border-red-500' : ''
+                }`}
                 placeholder="Enter name..."
                 required
               />
@@ -85,7 +89,9 @@ export const AddUserButton = () => {
                 name="email"
                 id="email"
                 data-testid="add-modal-email"
-                className="border border-slate-400 rounded-md h-9 px-2 text-sm"
+                className={`border border-slate-400 rounded-md h-9 px-2 text-sm${
+                  error ? ' border-red-500' : ''
+                }`}
                 placeholder="Enter email..."
                 required
               />
@@ -94,10 +100,15 @@ export const AddUserButton = () => {
                 name="password"
                 id="password"
                 data-testid="add-modal-password"
-                className="border border-slate-400 rounded-md h-9 px-2 text-sm"
+                className={`border border-slate-400 rounded-md h-9 px-2 text-sm${
+                  error ? ' border-red-500' : ''
+                }`}
                 placeholder="Enter password..."
                 required
               />
+
+              {error && <p className="text-red-500 text-sm">{error}</p>}
+
               <button
                 type="submit"
                 className="bg-blue-500 h-9 text-white rounded-md"

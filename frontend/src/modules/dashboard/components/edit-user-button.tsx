@@ -12,7 +12,7 @@ import {
   DialogClose,
   DialogTitle,
 } from '@/components/dialog'
-import { CreateUserResponse } from '@/types/api'
+import { CreateUserResponse, FieldError } from '@/types/api'
 import { customFetch } from '@/utils/fetch'
 
 import revalidateUsers from '../actions/revalidate-users'
@@ -27,6 +27,7 @@ type Props = {
 export const EditUserButton = ({ token, userId, userEmail, userName }: Props) => {
   const [isClient, setIsClient] = useState(false)
   const [isOpen, setIsOpen] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     setIsClient(true)
@@ -58,6 +59,7 @@ export const EditUserButton = ({ token, userId, userEmail, userName }: Props) =>
       }
     } catch (err) {
       console.error(err)
+      setError((err as Error | FieldError).message)
     }
   }
 
@@ -87,7 +89,9 @@ export const EditUserButton = ({ token, userId, userEmail, userName }: Props) =>
                 name="name"
                 data-testid="edit-modal-name"
                 id="name"
-                className="border border-slate-400 rounded-md h-9 px-2 text-sm"
+                className={`border border-slate-400 rounded-md h-9 px-2 text-sm${
+                  error ? ' border-red-500' : ''
+                }`}
                 placeholder="Enter name..."
                 defaultValue={userName}
                 required
@@ -97,11 +101,16 @@ export const EditUserButton = ({ token, userId, userEmail, userName }: Props) =>
                 name="email"
                 data-testid="edit-modal-email"
                 id="email"
-                className="border border-slate-400 rounded-md h-9 px-2 text-sm"
+                className={`border border-slate-400 rounded-md h-9 px-2 text-sm${
+                  error ? ' border-red-500' : ''
+                }`}
                 placeholder="Enter email..."
                 defaultValue={userEmail}
                 required
               />
+
+              {error && <p className="text-red-500 text-sm">{error}</p>}
+
               <button
                 type="submit"
                 className="bg-blue-500 h-9 text-white rounded-md"

@@ -11,6 +11,7 @@ import { validateFields } from '../utils/validators'
 import { handleError } from '../utils/error-handling'
 import { authenticated } from '../middleware/authenticated'
 import type { AuthenticatedRequest } from '../types/auth-user-request'
+import { FieldError } from '../utils/errors'
 
 const router = Router()
 
@@ -31,7 +32,10 @@ router.post(
 
       if (!isValidPassword) {
         // Keep credentials err message vague to prevent brute force attacks
-        throw new Error('Invalid credentials')
+        throw new FieldError('Invalid credentials', {
+          password: 'Invalid credentials',
+          email: 'Invalid credentials',
+        })
       }
 
       const token = jwt.sign(
@@ -52,7 +56,7 @@ router.post(
           token,
         })
     } catch (error) {
-      const err = error as Error
+      const err = error as Error | FieldError
       handleError(err, req, res, () => {})
     }
   },

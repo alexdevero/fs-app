@@ -1,3 +1,5 @@
+import { FieldError } from '@/types/api'
+
 type Params = {
   url: string
   method?: string
@@ -6,7 +8,7 @@ type Params = {
 }
 
 export async function customFetch({ url, method = 'GET', headers = {}, body }: Params) {
-  return fetch(url, {
+  const res = await fetch(url, {
     method,
     headers: {
       'Content-Type': 'application/json',
@@ -15,4 +17,12 @@ export async function customFetch({ url, method = 'GET', headers = {}, body }: P
     credentials: 'include',
     ...(body ? { body } : {}),
   })
+
+  if (!res.ok) {
+    const errorData = await res.json()
+
+    throw new FieldError(errorData.message, errorData.fields)
+  }
+
+  return res
 }
