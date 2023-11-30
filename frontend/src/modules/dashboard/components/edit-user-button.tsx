@@ -17,7 +17,14 @@ import { customFetch } from '@/utils/fetch'
 
 import revalidateUsers from '../actions/revalidate-users'
 
-export const AddUserButton = () => {
+type Props = {
+  token?: string
+  userId: string
+  userName: string
+  userEmail: string
+}
+
+export const EditUserButton = ({ token, userId, userEmail, userName }: Props) => {
   const [isClient, setIsClient] = useState(false)
   const [isOpen, setIsOpen] = useState(false)
 
@@ -28,16 +35,20 @@ export const AddUserButton = () => {
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
 
+    if (!token) return
+
     const formData = new FormData(e.target as HTMLFormElement)
     const name = formData.get('name')
     const email = formData.get('email')
-    const password = formData.get('password')
 
     try {
       const response = await customFetch({
-        url: `${API_URL}/register`,
-        method: 'POST',
-        body: JSON.stringify({ email, name, password }),
+        url: `${API_URL}/users/${userId}`,
+        method: 'PUT',
+        headers: {
+          Cookie: `token=${token}`,
+        },
+        body: JSON.stringify({ email, name }),
       })
       const res = (await response.json()) as CreateUserResponse
 
@@ -54,9 +65,9 @@ export const AddUserButton = () => {
     isClient && (
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogTrigger>
-          <span className="w-14 h-14 text-white rounded-full bg-blue-600 flex items-center justify-center">
-            +
-          </span>
+          <button className="bg-transparent text-gray-700 rounded-md flex items-center justify-center ml-auto px-2 h-7 text-sm hover:bg-gray-100 transition-all">
+            Edit
+          </button>
         </DialogTrigger>
         <DialogPortal>
           <DialogOverlay className="fixed inset-0 z-50 bg-slate-500/20" />
@@ -64,7 +75,7 @@ export const AddUserButton = () => {
             <DialogClose className="absolute right-3 top-3">&times;</DialogClose>
 
             <DialogTitle>
-              <h2 className="text-lg font-bold my-0 text-center">Add user</h2>
+              <h2 className="text-lg font-bold my-0 text-center">Edit user</h2>
             </DialogTitle>
 
             <form onSubmit={handleSubmit} className="flex flex-col w-[320px] gap-4">
@@ -74,6 +85,7 @@ export const AddUserButton = () => {
                 id="name"
                 className="border border-slate-400 rounded-md h-9 px-2 text-sm"
                 placeholder="Enter name..."
+                defaultValue={userName}
                 required
               />
               <input
@@ -82,18 +94,11 @@ export const AddUserButton = () => {
                 id="email"
                 className="border border-slate-400 rounded-md h-9 px-2 text-sm"
                 placeholder="Enter email..."
-                required
-              />
-              <input
-                type="password"
-                name="password"
-                id="password"
-                className="border border-slate-400 rounded-md h-9 px-2 text-sm"
-                placeholder="Enter password..."
+                defaultValue={userEmail}
                 required
               />
               <button type="submit" className="bg-blue-500 h-9 text-white rounded-md">
-                Add user
+                Update user
               </button>
             </form>
           </DialogContent>

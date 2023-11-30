@@ -43,15 +43,18 @@ export async function updateUser(
   id: string,
   name: string,
   email: string,
-  password: string,
+  password?: string,
 ) {
   const user = await DI.em.findOneOrFail(User, { id })
 
-  const hashedPassword = await bcrypt.hash(password, 10)
-
   user.name = name
   user.email = email
-  user.password = hashedPassword
+
+  if (password) {
+    const hashedPassword = await bcrypt.hash(password, 10)
+    user.password = hashedPassword
+  }
+
   user.updatedAt = new Date()
 
   await DI.em.persistAndFlush(user)

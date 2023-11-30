@@ -5,6 +5,7 @@ import type { GetMeResponse, GetUsersResponse } from '@/types/api'
 import { customFetch } from '@/utils/fetch'
 
 import { RemoveButton } from './components/remove-button'
+import { EditUserButton } from './components/edit-user-button'
 
 async function getUsersData(token?: string) {
   if (!token) return
@@ -51,24 +52,37 @@ export async function DashboardPage() {
   return (
     <div className="px-3">
       <table className="w-full">
-        <thead>
+        <thead className="bg-gray-800 text-white">
           <tr className="text-left font-bold text-sm">
-            <th className="h-7">Name</th>
-            <th className="h-7">Email</th>
-            <th className="h-7" />
+            <th className="h-7 py-3 px-4 uppercase font-semibold text-sm">Name</th>
+            <th className="h-7 py-3 px-4 uppercase font-semibold text-sm">Email</th>
+            <th className="h-7 py-3 px-4 uppercase font-semibold text-sm" />
           </tr>
         </thead>
         <tbody>
-          {data?.map((user) => (
-            <tr key={user.id} className="font-normal text-sm">
-              <td className="h-7">{user.name}</td>
-              <td className="h-7">{user.email}</td>
-              <td className="h-7 text-right">
-                <RemoveButton
-                  userId={user.id}
-                  token={tokenCookie}
-                  disabled={user.email === me?.email}
-                />
+          {data?.map((user, i) => (
+            <tr
+              key={user.id}
+              className={`font-normal text-sm ${
+                i % 2 ? 'text-gray-700' : 'bg-gray-100'
+              }`}
+            >
+              <td className="h-7 text-left py-3 px-4">{user.name}</td>
+              <td className="h-7 text-left py-3 px-4">{user.email}</td>
+              <td className="h-7 py-3 px-4 text-right">
+                <div className="flex gap-2 justify-end">
+                  <EditUserButton
+                    token={tokenCookie}
+                    userId={user.id}
+                    userName={user.name}
+                    userEmail={user.email}
+                  />
+                  <RemoveButton
+                    userId={user.id}
+                    token={tokenCookie}
+                    disabled={user.email === me?.email}
+                  />
+                </div>
               </td>
             </tr>
           ))}

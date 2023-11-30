@@ -23,6 +23,7 @@ export const DI = {} as {
 
 export const app = express()
 const PORT = process.env.PORT || 3000
+const FE_PORT = process.env.FE_PORT || 8080
 
 export const init = (async () => {
   DI.orm = await MikroORM.init<PostgreSqlDriver>()
@@ -32,7 +33,7 @@ export const init = (async () => {
 
   app.use(cookieParser())
   app.use(express.json())
-  app.use(cors({ origin: 'http://localhost:8080', credentials: true }))
+  app.use(cors({ origin: `http://localhost:${FE_PORT}`, credentials: true }))
   app.use((req, res, next) => RequestContext.create(DI.orm.em, next))
   app.use('/api', authController)
   app.use('/api/users', usersController)

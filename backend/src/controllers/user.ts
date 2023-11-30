@@ -88,15 +88,10 @@ router.put(
   '/:userId',
   authenticated,
   param('userId').notEmpty().escape(),
-  body(['email', 'name', 'password']).notEmpty().escape(),
+  body(['email', 'name']).notEmpty().escape(),
   async (req: Request, res: Response) => {
     try {
-      const { name, email, password } = validateFields<UserReq>(req, [
-        'userId',
-        'email',
-        'name',
-        'password',
-      ])
+      const { name, email } = validateFields<UserReq>(req, ['userId', 'email', 'name'])
 
       const { userId } = req.params
 
@@ -106,7 +101,7 @@ router.put(
         throw new Error('User not found')
       }
 
-      const updatedUser = await updateUser(userId, name, email, password)
+      const updatedUser = await updateUser(userId, name, email)
 
       res.json({
         message: 'User successful updated',

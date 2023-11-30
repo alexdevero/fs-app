@@ -34,26 +34,30 @@ export async function LoginPage() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col w-[320px] gap-4">
-      <input
-        type="text"
-        name="email"
-        id="email"
-        className="border border-slate-400 rounded-md h-9 px-2 text-sm"
-        placeholder="Enter email..."
-        required
-      />
-      <input
-        type="password"
-        name="password"
-        id="password"
-        className="border border-slate-400 rounded-md h-9 px-2 text-sm"
-        placeholder="Enter password..."
-        required
-      />
-      <button type="submit" className="bg-blue-500 h-9 text-white rounded-md">
-        Login
-      </button>
-    </form>
+    <div>
+      <h1 className="mb-8 text-2xl text-center">Welcome</h1>
+
+      <form onSubmit={handleSubmit} className="flex flex-col w-[320px] gap-4">
+        <input
+          type="text"
+          name="email"
+          id="email"
+          className="border border-slate-400 rounded-md h-9 px-2 text-sm"
+          placeholder="Enter email..."
+          required
+        />
+        <input
+          type="password"
+          name="password"
+          id="password"
+          className="border border-slate-400 rounded-md h-9 px-2 text-sm"
+          placeholder="Enter password..."
+          required
+        />
+        <button type="submit" className="bg-blue-500 h-9 text-white rounded-md">
+          Login
+        </button>
+      </form>
+    </div>
   )
 }

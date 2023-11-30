@@ -34,13 +34,12 @@ export const RemoveButton = ({ disabled, userId, token }: Props) => {
 
   return (
     <button
-      className={`bg-blue-500 h-7 text-white rounded-md px-3 text-xs${
-        disabled ? ' bg-gray-400 opacity-50 cursor-not-allowed' : ''
-      }`}
+      className={`bg-transparent text-gray-700 rounded-full flex items-center justify-center
+       w-8 h-8 text-xl ${disabled ? ' hidden' : ' hover:bg-gray-100 transition-all'}`}
       onClick={handleClick}
       disabled={disabled}
     >
-      Remove
+      &times;
     </button>
   )
 }
