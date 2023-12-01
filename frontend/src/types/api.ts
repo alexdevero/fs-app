@@ -30,6 +30,7 @@ export type UpdateUserResponse = {
 
 export type GetUsersResponse = {
   users: Omit<User, 'password'>[]
+  pagination: Pagination
 }
 
 export type GetUserResponse = {
@@ -72,4 +73,13 @@ export class FieldError extends Error {
     this.name = 'FieldError'
     this.fields = fields
   }
+}
+
+export type Pagination = {
+  page: number
+  pageSize: number
+  totalCount: number
+  totalPageCount: number
+  hasNextPage: boolean
+  hasPrevPage: boolean
 }

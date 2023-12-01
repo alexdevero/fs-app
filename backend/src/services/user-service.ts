@@ -4,10 +4,28 @@ import { v4 as Uuid } from 'uuid'
 import { DI } from '..'
 import { User } from './../entities/user'
 
-export async function getUsers() {
-  const users = await DI.userRepository.findAll()
+export async function getUsers(page: number, pageSize: number) {
+  const [users, count] = await DI.userRepository.findAndCount(
+    {},
+    {
+      limit: pageSize,
+      offset: (page - 1) * pageSize,
+    },
+  )
 
-  return users
+  const totalPageCount = Math.ceil(count / pageSize)
+  const hasNextPage = page < totalPageCount
+  const hasPrevPage = page > 1
+
+  return {
+    users,
+    page,
+    pageSize,
+    totalCount: count,
+    totalPageCount,
+    hasNextPage,
+    hasPrevPage,
+  }
 }
 
 export async function getUserByEmail(email: string) {

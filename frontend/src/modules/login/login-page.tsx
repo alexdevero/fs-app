@@ -1,10 +1,12 @@
 'use client'
 
 import { FormEvent, useState } from 'react'
+
 import { useRouter } from 'next/navigation'
 
 import { API_URL } from '@/consts/env'
 import { FieldError, LoginResponse } from '@/types/api'
+import { getDashboardSearchParams } from '@/utils/dashboard-search-params'
 import { customFetch } from '@/utils/fetch'
 
 export function LoginPage() {
@@ -27,7 +29,8 @@ export function LoginPage() {
       const res = (await response.json()) as LoginResponse
 
       if (res.token) {
-        router.push('/dashboard')
+        const searchParams = getDashboardSearchParams()
+        router.push(`/dashboard?${searchParams.toString()}`)
       }
     } catch (err) {
       console.error(err)
@@ -37,18 +40,18 @@ export function LoginPage() {
 
   return (
     <div>
-      <h1 className="mb-8 text-2xl text-center">Welcome</h1>
+      <h1 className="mb-8 text-center text-2xl">Welcome</h1>
 
       <form
         onSubmit={handleSubmit}
-        className="flex flex-col w-[320px] gap-4"
+        className="flex w-[320px] flex-col gap-4"
         data-testid="login-form"
       >
         <input
           type="text"
           name="email"
           id="email"
-          className={`border border-slate-400 rounded-md h-9 px-2 text-sm${
+          className={`h-9 rounded-md border border-slate-400 px-2 text-sm${
             error ? ' border-red-500' : ''
           }`}
           placeholder="Enter email..."
@@ -59,7 +62,7 @@ export function LoginPage() {
           type="password"
           name="password"
           id="password"
-          className={`border border-slate-400 rounded-md h-9 px-2 text-sm${
+          className={`h-9 rounded-md border border-slate-400 px-2 text-sm${
             error ? ' border-red-500' : ''
           }`}
           placeholder="Enter password..."
@@ -67,11 +70,11 @@ export function LoginPage() {
           required
         />
 
-        {error && <p className="text-red-500 text-sm">{error}</p>}
+        {error && <p className="text-sm text-red-500">{error}</p>}
 
         <button
           type="submit"
-          className="bg-blue-500 h-9 text-white rounded-md"
+          className="h-9 rounded-md bg-blue-500 text-white"
           data-testid="login-submit-button"
         >
           Login

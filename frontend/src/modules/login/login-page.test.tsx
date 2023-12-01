@@ -1,9 +1,9 @@
+import { fireEvent, render, waitFor } from '@testing-library/react'
+
 import React from 'react'
-import { render, fireEvent, waitFor } from '@testing-library/react'
 
 import { API_URL } from '@/consts/env'
 import { customFetch } from '@/utils/fetch'
-import { resolvedComponent } from '@/utils/tests'
 
 import { LoginPage } from './login-page'
 
@@ -19,17 +19,20 @@ jest.mock('../../utils/fetch.ts', () => ({
   customFetch: jest.fn(),
 }))
 
+jest.mock('react', () => ({
+  ...jest.requireActual('react'),
+  useState: () => [null, jest.fn()],
+}))
+
 describe('LoginPage', () => {
   it('should render', async () => {
-    const LoginPageResolved = await resolvedComponent(LoginPage, {})
-    const { getByTestId } = render(<LoginPageResolved />)
+    const { getByTestId } = render(<LoginPage />)
 
     expect(getByTestId('login-form')).toBeInTheDocument()
   })
 
   it('should call customFetch with correct params', async () => {
-    const LoginPageResolved = await resolvedComponent(LoginPage, {})
-    const { getByTestId } = render(<LoginPageResolved />)
+    const { getByTestId } = render(<LoginPage />)
 
     const emailInput = getByTestId('login-email-input')
     const passwordInput = getByTestId('login-password-input')

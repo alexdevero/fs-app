@@ -1,5 +1,5 @@
 import { type Request, type Response, Router } from 'express'
-import { body, param } from 'express-validator'
+import { body, param, query } from 'express-validator'
 
 import {
   createUser,
@@ -15,6 +15,7 @@ import { authenticated } from '../middleware/authenticated'
 
 import { validateFields } from '../utils/validators'
 import { handleError } from '../utils/error-handling'
+import { Pagination } from '../types/pagination'
 
 const router = Router()
 
@@ -45,19 +46,27 @@ router.get(
   },
 )
 
-router.get('/', authenticated, async (req: Request, res: Response) => {
-  try {
-    const users = await getUsers()
+router.get(
+  '/',
+  authenticated,
+  query(['page', 'pageSize']).notEmpty().escape(),
+  async (req: Request, res: Response) => {
+    try {
+      const { page, pageSize } = validateFields<Pagination>(req, ['page', 'pageSize'])
 
-    res.json({
-      message: 'Users found',
-      users,
-    })
-  } catch (error) {
-    const err = error as Error
-    handleError(err, req, res, () => {})
-  }
-})
+      const { users, ...pagination } = await getUsers(Number(page), Number(pageSize))
+
+      res.json({
+        message: 'Users found',
+        users,
+        pagination,
+      })
+    } catch (error) {
+      const err = error as Error
+      handleError(err, req, res, () => {})
+    }
+  },
+)
 
 router.post(
   '/create',
